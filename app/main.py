@@ -7,6 +7,7 @@ from pythainlp import word_tokenize
 from pythainlp.util import dict_trie
 from pythainlp.corpus.common import thai_words
 from pythainlp.corpus import thai_stopwords
+import numpy as np
 import re
 import json
 
@@ -16,6 +17,7 @@ import json
 app=Flask(__name__)
 
 @app.route('/webhook',methods=['POST','GET'])
+
 
 def webhook():
     words = ['กาแฟ', 'น้ำหวาน', 'เค้ก', 'เครป', 'ไอศครีม','เครป','ผลไม้','น้ำผลไม้','โรตี','ขนมไทย','น้ำแข็งไส','ขนมปัง','แซนวิช','อเมริกาโน่','แซนวิช','น้ำสมุนไพร','เตยแก้ว','บอก','โอริโอ้']
@@ -38,22 +40,11 @@ def webhook():
     STOP_WORD.append ("ดื่ม")
     STOP_WORD.append ("เด็ด")
     STOP_WORD.append ("ดัง")
-    FORMAT = r"[\u0E00-\u0E7Fa-zA-Z'0-9]+"
-    def tokenize(sentence):
-        return word_tokenize(sentence, engine="newmm",custom_dict=trie)
+    
 
-    def cleaning_stop_word(tk_list):
-        return [word for word in tk_list if word not in STOP_WORD]
-
-    def cleaning_symbols_emoji(tk_list):
-        return [re.findall(FORMAT, text)[0] for text in tk_list if re.findall(FORMAT, text)]
-
-    def big_cleaning(sentence):
-        return  cleaning_symbols_emoji( cleaning_stop_word( tokenize(sentence) ) )
     def text_process(text):
         final ="".join(u for u in text if u not in('?'))
         final = word_tokenize(final, engine="newmm",custom_dict=trie)
-        final = "".join(word for word in final)
         final = "".join(word for word in final if word not in STOP_WORD)
         return final
     
@@ -65,14 +56,31 @@ def webhook():
         message = str(message)
         model  = load_model('my_model_LSTM.h5')
 
-        text_process(message)
-        
-        if "ขายอะไร" in message:
-            Reply_text="- กาแฟ และเครื่องดื่มค่ะ เช่น\n- คาปูชิโน่\n- ลาเต้\n- อเมริกาโน่\n - ชาไทย"
-        elif "สวัสดี" in message:
-            Reply_text="สวัสดีค่ะ"
-        else:
-            Reply_text="ขออภัยค่ะ ฉันไม่เข้าใจคำถาม กรุณาถามคำถามใหม่ค่ะ"
+        token = text_process(message)
+    
+        msg = np.argmax(model.predict(token),axis=1)
+
+        if 0 in msg:
+            Reply_text = "น้ำหวาน"
+        elif 1 in msg:
+            Reply_text = "เครป"
+        elif 2 in msg:
+            Reply_text = "ขนมไทย"
+        elif 3 in msg:
+            Reply_text = "เค้ก"
+        elif 4 in msg:
+            Reply_text = "ไอศกรีม"
+        elif 5 in msg:
+            Reply_text = "น้ำแข็งไส"
+        elif 6 in msg:
+            Reply_text = "โรตี"
+        elif 7 in msg:
+            Reply_text = "กาแฟ"
+        elif 8 in msg:
+            Reply_text = "ขนมปัง"
+        elif 9 in msg:
+            Reply_text = "ผลไม้"
+            
         print(Reply_text,flush=True)
         ReplyMessage(Reply_token,message,Channel_access_token)
         return request.json,200
