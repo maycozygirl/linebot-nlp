@@ -74,7 +74,7 @@ def webhook():
         else:
             Reply_text="ขออภัยค่ะ ฉันไม่เข้าใจคำถาม กรุณาถามคำถามใหม่ค่ะ"
         print(Reply_text,flush=True)
-        ReplyMessage(Reply_token,Reply_text,Channel_access_token)
+        ReplyMessage(Reply_token,message,Channel_access_token)
         return request.json,200
     elif request.method=='GET':
         return "this is method GET!!!",200
