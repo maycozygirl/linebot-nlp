@@ -35,7 +35,7 @@ def webhook():
         final = "".join(word for word in final if word not in STOP_WORD)
         return final
     
-    data_df = pd.read_csv('./data/dataset3.csv', names=['num', 'input_text', 'labels'])
+    data_df = pd.read_csv('./data/dataset.csv', names=['num', 'input_text', 'labels'])
     data_df['token'] = data_df['input_text'].apply(text_process)
 
     sentences = data_df['token'].values
@@ -72,7 +72,7 @@ def webhook():
             9: "เราแนะนำเจ้แหมวผลไม้บาร์ใหม่ ผลไม้สดใหม่น่าทาน ราคาถูก แม่ค้าบริการดี \nอีกร้านที่แนะนำเราแนะนำร้านน้ำผึ้งผลไม้จากสวน เหมาะสำหรับซื้อผลไม้เก็บไปทานไว้ที่บ้าน ผลไม้เกรด A สดใหม่ "
         }
 
-        if np.max(predict) >= 0.5:
+        if np.max(predict) >= 0.9:
             Reply_text = food_categories.get(categories)
         else:
             Reply_text = "ขออภัยค่ะ เราไม่รู้จักของหวานชนิดนี้"
