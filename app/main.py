@@ -35,7 +35,7 @@ def webhook():
         final = "".join(word for word in final if word not in STOP_WORD)
         return final
     
-    data_df = pd.read_csv('dataset3.csv', names=['num', 'input_text', 'labels'])
+    data_df = pd.read_csv('./data/dataset3.csv', names=['num', 'input_text', 'labels'])
     data_df['token'] = data_df['input_text'].apply(text_process)
 
     sentences = data_df['token'].values
@@ -51,7 +51,7 @@ def webhook():
         message=payload['events'][0]['message']['text']
 
         message = str(message)
-        model  = load_model('/content/my_model_LSTM.h5')
+        model  = load_model('./model/my_model_LSTM.h5')
 
         token = text_process(message)
 
