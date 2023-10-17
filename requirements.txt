@@ -16,4 +16,3 @@ zipp==3.8.1
 tensorflow==2.13.0
 pythainlp==4.0.2
 pandas==2.0.3
-numpy==1.26.1
