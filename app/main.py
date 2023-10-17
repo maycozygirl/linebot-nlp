@@ -54,7 +54,7 @@ def webhook():
         model  = load_model('./model/my_model_LSTM.h5')
 
         token = word_tokenize(text_process(message))
-
+        
         sequence = tokenizer.texts_to_sequences([token])
         x_real = pad_sequences(sequence, maxlen=12, padding='post')
         predict = model.predict(x_real)
