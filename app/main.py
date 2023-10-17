@@ -53,7 +53,7 @@ def webhook():
         message = str(message)
         model  = load_model('./model/my_model_LSTM.h5')
 
-        token = text_process(message)
+        token = word_tokenize(text_process(message))
 
         sequence = tokenizer.texts_to_sequences([token])
         x_real = pad_sequences(sequence, maxlen=12, padding='post')
@@ -72,7 +72,7 @@ def webhook():
             9: "เราแนะนำเจ้แหมวผลไม้บาร์ใหม่ ผลไม้สดใหม่น่าทาน ราคาถูก แม่ค้าบริการดี \nอีกร้านที่แนะนำเราแนะนำร้านน้ำผึ้งผลไม้จากสวน เหมาะสำหรับซื้อผลไม้เก็บไปทานไว้ที่บ้าน ผลไม้เกรด A สดใหม่ "
         }
 
-        if np.max(predict) >= 0.9:
+        if np.max(predict) >= 0.4:
             Reply_text = food_categories.get(categories)
         else:
             Reply_text = "ขออภัยค่ะ เราไม่รู้จักของหวานชนิดนี้"
